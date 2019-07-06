@@ -23,10 +23,15 @@ include_once $this->targetDirs[3].'/vendor/symfony/routing/Loader/GlobFileLoader
 include_once $this->targetDirs[3].'/vendor/symfony/routing/Loader/DirectoryLoader.php';
 include_once $this->targetDirs[3].'/vendor/symfony/routing/Loader/ObjectRouteLoader.php';
 include_once $this->targetDirs[3].'/vendor/symfony/routing/Loader/DependencyInjection/ServiceRouterLoader.php';
+include_once $this->targetDirs[3].'/vendor/symfony/routing/Loader/AnnotationClassLoader.php';
+include_once $this->targetDirs[3].'/vendor/symfony/framework-bundle/Routing/AnnotatedRouteControllerLoader.php';
+include_once $this->targetDirs[3].'/vendor/symfony/routing/Loader/AnnotationFileLoader.php';
+include_once $this->targetDirs[3].'/vendor/symfony/routing/Loader/AnnotationDirectoryLoader.php';
 
 $a = new \Symfony\Component\Config\Loader\LoaderResolver();
 
 $b = new \Symfony\Component\HttpKernel\Config\FileLocator(($this->services['kernel'] ?? $this->get('kernel', 1)), ($this->targetDirs[3].'/src/Resources'), [0 => ($this->targetDirs[3].'/src')]);
+$c = new \Symfony\Bundle\FrameworkBundle\Routing\AnnotatedRouteControllerLoader(($this->privates['annotations.cached_reader'] ?? $this->load('getAnnotations_CachedReaderService.php')));
 
 $a->addLoader(new \Symfony\Component\Routing\Loader\XmlFileLoader($b));
 $a->addLoader(new \Symfony\Component\Routing\Loader\YamlFileLoader($b));
@@ -34,5 +39,8 @@ $a->addLoader(new \Symfony\Component\Routing\Loader\PhpFileLoader($b));
 $a->addLoader(new \Symfony\Component\Routing\Loader\GlobFileLoader($b));
 $a->addLoader(new \Symfony\Component\Routing\Loader\DirectoryLoader($b));
 $a->addLoader(new \Symfony\Component\Routing\Loader\DependencyInjection\ServiceRouterLoader($this));
+$a->addLoader($c);
+$a->addLoader(new \Symfony\Component\Routing\Loader\AnnotationDirectoryLoader($b, $c));
+$a->addLoader(new \Symfony\Component\Routing\Loader\AnnotationFileLoader($b, $c));
 
 return $this->services['routing.loader'] = new \Symfony\Bundle\FrameworkBundle\Routing\DelegatingLoader(($this->privates['controller_name_converter'] ?? ($this->privates['controller_name_converter'] = new \Symfony\Bundle\FrameworkBundle\Controller\ControllerNameParser(($this->services['kernel'] ?? $this->get('kernel', 1))))), $a, ['utf8' => true]);

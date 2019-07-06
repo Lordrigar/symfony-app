@@ -11,4 +11,6 @@ include_once $this->targetDirs[3].'/vendor/symfony/http-kernel/CacheWarmer/Cache
 
 return $this->services['cache_warmer'] = new \Symfony\Component\HttpKernel\CacheWarmer\CacheWarmerAggregate(new RewindableGenerator(function () {
     yield 0 => ($this->privates['router.cache_warmer'] ?? $this->load('getRouter_CacheWarmerService.php'));
-}, 1), true, ($this->targetDirs[0].'/srcApp_KernelDevDebugContainerDeprecations.log'));
+    yield 1 => ($this->privates['annotations.cache_warmer'] ?? $this->load('getAnnotations_CacheWarmerService.php'));
+    yield 2 => ($this->privates['doctrine.orm.proxy_cache_warmer'] ?? $this->load('getDoctrine_Orm_ProxyCacheWarmerService.php'));
+}, 3), true, ($this->targetDirs[0].'/srcApp_KernelDevDebugContainerDeprecations.log'));

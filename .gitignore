@@ -1,2 +1,4 @@
 vendor/
 .env
+var/cache
+var/log

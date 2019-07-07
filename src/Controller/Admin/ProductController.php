@@ -8,6 +8,9 @@ use App\Repository\ProductRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use App\Entity\Product;
 
+/**
+ * @Route("/api")
+ */
 class ProductController extends AbstractController
 {
     /**

@@ -15,7 +15,7 @@ services:
     # this creates a service per class whose id is the fully-qualified class name
     App\:
         resource: '../src/*'
-        exclude: '../src/{DependencyInjection,Entity,Migrations,Tests,Kernel.php}'
+        exclude: '../src/{Entity,Migrations,Tests}'
 
     # controllers are imported separately to make sure services can be injected
     # as action arguments even if you don't extend any base controller class
@@ -30,3 +30,7 @@ services:
         public: false
         tags: [serializer.normalizer]
     
+    # Links and injects the doctrine cache to be used as DB
+    Doctrine\Common\Cache\RedisCache:
+        alias: 'doctrine_cache.providers.my_redis_cache'
+        public: true

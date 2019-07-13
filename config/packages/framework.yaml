@@ -18,6 +18,7 @@ framework:
     serializer:
         name_converter: 'serializer.name_converter.camel_case_to_snake_case'
 
+    # This is used for symfony cache warm up
     cache:
         app: cache.adapter.redis
         default_redis_provider: "redis://%env(REDIS_HOST)%:%env(REDIS_PORT)%"

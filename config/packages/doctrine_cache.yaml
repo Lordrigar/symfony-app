@@ -1,0 +1,9 @@
+doctrine_cache:
+    aliases:
+        redis_cache: my_redis_cache
+    providers:
+        my_redis_cache:
+            namespace: symfony-app
+            redis:
+                host: '%env(resolve:REDIS_HOST)%'
+                port: '%env(resolve:REDIS_PORT)%'

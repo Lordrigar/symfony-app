@@ -5,10 +5,10 @@ framework:
 
     # Enables session support. Note that the session will ONLY be started if you read or write from it.
     # Remove or comment this section to explicitly disable session support.
-    session:
-        handler_id: ~
-        cookie_secure: auto
-        cookie_samesite: lax
+    # session:
+    #     handler_id: ~
+    #     cookie_secure: auto
+    #     cookie_samesite: lax
 
     #esi: true
     #fragments: true
@@ -17,3 +17,7 @@ framework:
 
     serializer:
         name_converter: 'serializer.name_converter.camel_case_to_snake_case'
+
+    cache:
+        app: cache.adapter.redis
+        default_redis_provider: "redis://%env(REDIS_HOST)%:%env(REDIS_PORT)%"

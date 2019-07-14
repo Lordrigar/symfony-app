@@ -34,3 +34,8 @@ services:
     Doctrine\Common\Cache\RedisCache:
         alias: 'doctrine_cache.providers.my_redis_cache'
         public: true
+
+    # Predis\Client:
+    #     alias: 'doctrine_cache.providers.my_redis_cache'
+    #     public: true
+        

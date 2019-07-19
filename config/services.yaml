@@ -37,7 +37,9 @@ services:
         alias: 'doctrine_cache.providers.my_redis_cache'
         public: true
 
-    # Predis\Client:
-    #     alias: 'doctrine_cache.providers.my_redis_cache'
-    #     public: true
+    # Injects Mongo DocumentManager to be available via constructor
+    # After use as normal doctrine ODM
+    Doctrine\ODM\MongoDB\DocumentManager:
+        alias: 'doctrine_mongodb'
+        public: true
         

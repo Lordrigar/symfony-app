@@ -10,6 +10,7 @@ use App\Entity\Guests;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use App\Services\PageService;
 
 class GuestController extends AbstractController
 {
@@ -67,5 +68,25 @@ class GuestController extends AbstractController
 
 
         return $this->json(['Saved!']);
+    }
+
+    /**
+     * @Route("/guest/search", methods={"POST"})
+     */
+    public function searchPaginate(Request $request)
+    {
+        $em = $this->getDoctrine()->getEntityManager();
+
+        $pageService = new PageService($request, $em, Guests::class, 4);
+
+        return $this->json(
+            [
+                'guests' => $pageService->getRecords(),
+                'pager' => $pageService->getDisplayParameters(),
+            ], 
+            200, 
+            [], 
+            ['groups' => 'Guests']
+        );
     }
 }

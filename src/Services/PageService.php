@@ -7,6 +7,8 @@ use Symfony\Component\HttpFoundation\Request;
 
 class PageService
 {
+    //TODO: Add docblock and comments
+
     private $request;
     private $em;
     private $entityName;
@@ -20,15 +22,15 @@ class PageService
     private $sortDirection;
     private $sortReverse;
     private $filter;
-    
+
     /**
      * Constructor
      */
     public function __construct(
         Request $request,
-        EntityManager $em, 
-        ?string $entity_name = null, 
-        int $page_size = 20, 
+        EntityManager $em,
+        ?string $entity_name = null,
+        int $page_size = 20,
         ?string $default_sort_field = null
     ) {
         $this->request = $request;
@@ -45,17 +47,19 @@ class PageService
     /**
      * Get the total number of records
      */
-    private function getTotal() 
+    private function getTotal()
     {
         $total = $this->em->getRepository($this->entityName)
             ->createQueryBuilder('t')
             ->select('count(t.id)');
-        if(!empty($this->filter)) {
-            foreach($this->filter as $key => $value) {
-                if( $this->em->getClassMetadata($this->entityName)->hasField($key) ) {
+        if (!empty($this->filter)) {
+            foreach ($this->filter as $key => $value) {
+                if ($this->em->getClassMetadata($this->entityName)->hasField($key)) {
                     $total = $total->andWhere("t.{$key} LIKE :{$key}");
-                    if( $this->em->getClassMetadata($this->entityName)->getTypeOfField($key) === 'string' || 
-                        $this->em->getClassMetadata($this->entityName)->getTypeOfField($key) === 'text' ) {
+                    if (
+                        $this->em->getClassMetadata($this->entityName)->getTypeOfField($key) === 'string' ||
+                        $this->em->getClassMetadata($this->entityName)->getTypeOfField($key) === 'text'
+                    ) {
                         $total = $total->setParameter($key, '%' . $value . '%');
                     } else {
                         $total = $total->setParameter($key, $value);
@@ -70,47 +74,49 @@ class PageService
     /**
      * Set the current page and total number of pages
      */
-    private function setCurrentPage() 
+    private function setCurrentPage()
     {
         $request = json_decode($this->request->getContent());
         if (isset($request->page)) {
             $this->currentPage = $request->page;
         }
 
-        if(!isset($this->currentPage)) {
+        if (!isset($this->currentPage)) {
             $this->currentPage = 1;
         }
 
         $this->totalPages = ceil($this->totalRecords / $this->pageSize);
-        
-        if(($this->currentPage * $this->pageSize) > $this->totalRecords) {
+
+        if (($this->currentPage * $this->pageSize) > $this->totalRecords) {
             $this->currentPage = $this->totalPages;
         }
-        
+
         // Offset for db table
-        if($this->currentPage > 1) {
+        if ($this->currentPage > 1) {
             $this->offset = ($this->currentPage - 1) * $this->pageSize;
         } else {
-           $this->offset = 0;
+            $this->offset = 0;
         }
     }
 
     /**
      * Get the records for the current page
      */
-    public function getRecords() 
+    public function getRecords()
     {
         $records = $this->em->getRepository($this->entityName)
             ->createQueryBuilder('t');
-        if(!empty($this->sortField)) {
+        if (!empty($this->sortField)) {
             $records = $records->orderBy('t.' . $this->sortField, $this->sortDirection);
         }
-        if(!empty($this->filter)) {
-            foreach($this->filter as $key => $value) {
-                if( $this->em->getClassMetadata($this->entityName)->hasField($key) ) {
+        if (!empty($this->filter)) {
+            foreach ($this->filter as $key => $value) {
+                if ($this->em->getClassMetadata($this->entityName)->hasField($key)) {
                     $records = $records->andWhere("t.{$key} LIKE :{$key}");
-                    if( $this->em->getClassMetadata($this->entityName)->getTypeOfField($key) === 'string' || 
-                        $this->em->getClassMetadata($this->entityName)->getTypeOfField($key) === 'text' ) {
+                    if (
+                        $this->em->getClassMetadata($this->entityName)->getTypeOfField($key) === 'string' ||
+                        $this->em->getClassMetadata($this->entityName)->getTypeOfField($key) === 'text'
+                    ) {
                         $records = $records->setParameter($key, '%' . $value . '%');
                     } else {
                         $records = $records->setParameter($key, $value);
@@ -124,11 +130,11 @@ class PageService
             ->getResult();
         return $records;
     }
-    
+
     /**
      * Get the parameters for the page display
      */
-    public function getDisplayParameters() 
+    public function getDisplayParameters()
     {
         $return = array(
             'current_page' => $this->currentPage,
@@ -138,7 +144,7 @@ class PageService
             'sort_reverse' => $this->sortReverse,
         );
 
-        if(empty($this->sortField)) {
+        if (empty($this->sortField)) {
             $return['sort'] = '';
         } else {
             $return['sort'] = $this->sortField . '.' . strtolower($this->sortDirection);
@@ -150,7 +156,7 @@ class PageService
     /**
      * Set the sorting fields
      */
-    private function setSorting() 
+    private function setSorting()
     {
         $request = json_decode($this->request->getContent());
 
@@ -158,25 +164,25 @@ class PageService
             $sort = $request->sort;
         }
 
-        if(empty($sort) && empty($this->defaultSortField)) {
+        if (empty($sort) && empty($this->defaultSortField)) {
             $this->sortField = '';
             $this->sortDirection = '';
         } else {
-            if(empty($sort)) {
+            if (empty($sort)) {
                 $arr = explode('.', $this->defaultSortField);
             } else {
                 $arr = explode('.', $sort);
             }
-            if(empty($arr[0])) {
+            if (empty($arr[0])) {
                 $this->sortField = '';
                 $this->sortDirection = '';
-            } elseif(count($arr) == 1 || empty($arr[1])) {
+            } elseif (count($arr) == 1 || empty($arr[1])) {
                 $this->sortField = $arr[0];
                 $this->sortDirection = 'ASC';
                 $this->sortReverse = $this->sortField . '.desc';
             } else {
                 $this->sortField = $arr[0];
-                if(strtolower($arr[1]) == 'desc') {
+                if (strtolower($arr[1]) == 'desc') {
                     $this->sortDirection = 'DESC';
                     $this->sortReverse = $this->sortField . '.asc';
                 } else {
@@ -185,7 +191,7 @@ class PageService
                 }
             }
             // Validate sort field
-            if(!$this->em->getClassMetadata($this->entityName)->hasField($this->sortField) ) {
+            if (!$this->em->getClassMetadata($this->entityName)->hasField($this->sortField)) {
                 $this->sortField = '';
                 $this->sortDirection = '';
             }
@@ -195,7 +201,7 @@ class PageService
     /**
      * Set Filter (remove keys for empty values)
      */
-    private function setFilter() 
+    private function setFilter()
     {
         $this->filter = [];
         $filters = null;
@@ -205,10 +211,10 @@ class PageService
             $filters = $request['filters'];
         }
 
-        if($filters && is_array($filters)) {
-            foreach($filters as $filter) {
+        if ($filters && is_array($filters)) {
+            foreach ($filters as $filter) {
                 foreach ($filter as $key => $value) {
-                    if(!empty($value) || $value == '0') {
+                    if (!empty($value) || $value == '0') {
                         $this->filter[$key] = $value;
                     }
                 }

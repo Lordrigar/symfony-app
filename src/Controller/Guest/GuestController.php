@@ -30,7 +30,6 @@ class GuestController extends AbstractController
     /**
      * @Route("/guest/create/{name}", name="guest_create")
      * @param string $name
-     * 
      * @return JsonResponse
      */
     public function create(string $name): JsonResponse
@@ -72,8 +71,10 @@ class GuestController extends AbstractController
 
     /**
      * @Route("/guest/search", methods={"POST"})
+     * @param Request $request
+     * @return JsonResponse
      */
-    public function searchPaginate(Request $request)
+    public function searchPaginate(Request $request): JsonResponse
     {
         $em = $this->getDoctrine()->getEntityManager();
 

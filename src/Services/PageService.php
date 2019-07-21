@@ -22,8 +22,6 @@ use Symfony\Component\HttpFoundation\Request;
 
 class PageService
 {
-    //TODO: Add docblock and comments
-
     /**var Request $request */
     private $request;
 

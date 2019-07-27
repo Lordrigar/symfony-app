@@ -78,7 +78,7 @@ class GuestController extends AbstractController
     {
         $em = $this->getDoctrine()->getEntityManager();
 
-        $pageService = new PageService($request, $em, Guests::class, 4);
+        $pageService = new PageService($request, $em, Guests::class);
 
         return $this->json(
             [

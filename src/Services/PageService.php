@@ -65,20 +65,26 @@ class PageService
      * @param Request $request
      * @param EntityManager $em
      * @param string|null $entityName
-     * @param int $pageSize
      * @param string|null $defaultSortField
      */
     public function __construct(
         Request $request,
         EntityManager $em,
         ?string $entityName = null,
-        int $pageSize = 20,
         ?string $defaultSortField = null
     ) {
         $this->request = $request;
         $this->em = $em;
         $this->entityName = $entityName;
-        $this->pageSize = $pageSize;
+        
+        $decodedRequest = json_decode($request->getContent());
+        $limit = 20;
+
+        if (isset($decodedRequest->limit)) {
+            $limit = $decodedRequest->limit;
+        }
+
+        $this->pageSize = $limit;
         $this->setFilter();
         $this->totalRecords = $this->getTotal();
         $this->setCurrentPage();

@@ -7,7 +7,8 @@
  *	"sort": "name.asc",
  *	"filters": [
  *		{"surname": "Zed"}
- *	]
+ *	],
+ *  "limit": 10
  * }
  * 
  * If default parameters are passed, they should also be passed in the same manner:

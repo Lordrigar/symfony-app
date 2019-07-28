@@ -5,6 +5,7 @@ namespace App\Controller\Guest;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Document\LogDocument;
+use App\Document\LogUserDocument;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use DateTimeImmutable;
@@ -32,10 +33,12 @@ class MongoController extends AbstractController
      */
     public function index(): JsonResponse
     {
+        $logUser = $this->dm->getRepository(LogUserDocument::class)->findOneBy(['name' => 'Wojtek']);
         $now = (new DateTimeImmutable())->format('Y-m-d');
         $message = new LogDocument();
         $message->setMessage('This is a new mongo message')
-            ->setTimestamp($now);
+            ->setTimestamp($now)
+            ->setLogUserDocument($logUser);
 
     
         $this->dm->persist($message);
@@ -51,6 +54,6 @@ class MongoController extends AbstractController
     {
         $logs = $this->dm->getRepository(LogDocument::class)->findAll();
 
-        return $this->json($logs, 200, [], ['groups' => 'LogDocument']);
+        return $this->json($logs, 200, [], ['groups' => ['LogDocument', 'LogUserDocument']]);
     }
 }

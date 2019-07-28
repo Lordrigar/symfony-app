@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\Category;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
@@ -29,6 +30,12 @@ class Product
      */
     private $price;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Category", inversedBy="products")
+     * @Groups({"Product.category"})
+     */
+    private $category;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -54,6 +61,18 @@ class Product
     public function setPrice(int $price): self
     {
         $this->price = $price;
+
+        return $this;
+    }
+
+    public function getCategory(): ?Category
+    {
+        return $this->category;
+    }
+
+    public function setCategory(?Category $category): self
+    {
+        $this->category = $category;
 
         return $this;
     }

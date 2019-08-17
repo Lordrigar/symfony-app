@@ -15,6 +15,6 @@ class GuestControllerTest extends WebTestCase
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
         $content = json_decode($client->getResponse()->getContent());
 
-        $this->assertCount(6, $content);
+        $this->assertCount(1, $content);
     }
 }

@@ -13,7 +13,7 @@ class GuestControllerTest extends WebTestCase
      * Booting Kernel and setting container is necessary in order to use container special serivces like serializer.
      * Since all controller responses are serialized, unit testing on controllers will not work without it
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         static::bootKernel();
     }
